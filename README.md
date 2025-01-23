@@ -1,2 +1,2 @@
 # MovementGameDev-Prototype
-Simulator game made with Unity
+Game prototype made with Unity
