@@ -1,2 +1,2 @@
-# MovementGameDev-Prototype
+# ParkourShooter
 Game prototype made with Unity
