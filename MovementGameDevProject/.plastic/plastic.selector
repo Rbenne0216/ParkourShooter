@@ -1,4 +1,0 @@
-repository "MovementGameDevProject/MovementGameDevProject@20067436767658@cloud"
-  path "/"
-    br "/main"
-    co "/main"
