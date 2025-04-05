@@ -20,8 +20,12 @@ public class MouseLook : MonoBehaviour
 
     private void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked; //cursor is locked in the middle of screen
+        Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        Vector3 currentRotation = transform.rotation.eulerAngles;
+        xRotation = currentRotation.x;
+        yRotation = currentRotation.y;
     }
 
     private void Update()
