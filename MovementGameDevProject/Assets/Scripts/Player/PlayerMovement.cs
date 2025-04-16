@@ -9,8 +9,6 @@ public class PlayerMovement : MonoBehaviour
     private float moveSpeed;
     public float walkSpeed;
     public float sprintSpeed;
-    public float slideSpeed;
-    //public float deceleration;
     public float groundDrag;
 
     [Header("Jumping")]
@@ -19,16 +17,16 @@ public class PlayerMovement : MonoBehaviour
     public float airMultiplier;
     bool readyToJump;
 
-    [Header("Crouching")]
-    public float crouchSpeed;
-    public float crouchYScale;
+    [Header("Sliding")]
+    public float slideSpeed;
+    public float slideYScale;
     private float startYScale;
 
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
     public KeyCode sprintKey = KeyCode.LeftShift;
-    public KeyCode crouchKey = KeyCode.C;
-    public KeyCode slideKey = KeyCode.LeftAlt; 
+    //public KeyCode crouchKey = KeyCode.C;
+    public KeyCode slideKey = KeyCode.C; 
 
     [Header("Ground Check")]
     public float playerHeight;
@@ -48,9 +46,8 @@ public class PlayerMovement : MonoBehaviour
 
     public enum MovementState
     {
-        sprinting,
         walking,
-        crouching,
+        sprinting,
         sliding,
         air
     }
@@ -76,10 +73,13 @@ public class PlayerMovement : MonoBehaviour
         StateHandler();
 
         if (grounded)
+        {
             rb.linearDamping = groundDrag;
+        }
         else
+        {
             rb.linearDamping = 0;
-
+        }
     }
 
     private void FixedUpdate()
@@ -103,6 +103,7 @@ public class PlayerMovement : MonoBehaviour
             Invoke(nameof(ResetJump), jumpCooldown);
         }
 
+        /*
         //when to start crouching
         if (Input.GetKeyDown(crouchKey))
         {
@@ -115,11 +116,12 @@ public class PlayerMovement : MonoBehaviour
         {
             transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
         }
+        */
 
         //when to slide
         if (Input.GetKeyDown(slideKey))
         {
-            transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
+            transform.localScale = new Vector3(transform.localScale.x, slideYScale, transform.localScale.z);
             rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
         }
 
@@ -153,12 +155,14 @@ public class PlayerMovement : MonoBehaviour
             moveSpeed = walkSpeed;
         }
 
+        /*
         //Mode - Crouching
         if (Input.GetKey(crouchKey))
         {
             state = MovementState.crouching;
             moveSpeed = crouchSpeed;
         }
+        */
 
         //Mode - Air
         else
