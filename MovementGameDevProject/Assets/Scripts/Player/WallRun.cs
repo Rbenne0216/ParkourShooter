@@ -1,127 +1,109 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class WallRun : MonoBehaviour
+public class Wallrun : MonoBehaviour
 {
-    [Header("Wall Run Settings")]
-    public LayerMask wallLayer;
-    public float wallCheckDistance = 1f;
-    public float wallRunGravity = 1f;
-    public float wallRunSpeed = 7f;
-    public float wallStickTime = 2f;
-    public float jumpForce = 8f;
-
-    private Rigidbody rb;
-    private PlayerMovement pm;
-
-    private bool isWallRunning;
-    private Vector3 currentWallNormal;
+    [Header("WallRun")]
+    public LayerMask whatIsWall;
+    public LayerMask whatIsGround;
+    public float wallRunForce;
+    public float maxWallRunTime;
     private float wallRunTimer;
 
-    public KeyCode jumpKey = KeyCode.Space;
+    [Header("Input")]
+    private float horizontalInput;
+    private float verticalInput;
 
-    void Start()
+    [Header("Detection")]
+    public float wallCheckDistance;
+    public float minJumpHeight;
+    private RaycastHit leftWallHit;
+    private RaycastHit rightWallHit;
+    private bool wallLeft;
+    private bool wallRight;
+
+    [Header("References")]
+    public Transform orientation;
+    private PlayerMovement pm;
+    private Rigidbody rb;
+
+    private void Start()
     {
         rb = GetComponent<Rigidbody>();
         pm = GetComponent<PlayerMovement>();
     }
 
-    void Update()
+    private void Update()
     {
-        if (!isWallRunning)
+        CheckForWall();
+        StateMachine();
+    }
+
+    private void FixedUpdate()
+    {
+        if (pm.wallrunning)
+            WallRunningMovement();
+    }
+
+    private void CheckForWall()
+    {
+        wallRight = Physics.Raycast(transform.position, orientation.right, out rightWallHit, wallCheckDistance, whatIsWall);
+        wallLeft = Physics.Raycast(transform.position, -orientation.right, out leftWallHit, wallCheckDistance, whatIsWall);
+    }
+
+    private bool AboveGround()
+    {
+        return !Physics.Raycast(transform.position, Vector3.down, minJumpHeight, whatIsGround);
+    }
+
+    private void StateMachine()
+    {
+        // Getting Inputs
+        horizontalInput = Input.GetAxisRaw("Horizontal");
+        verticalInput = Input.GetAxisRaw("Vertical");
+
+        // State 1 : Wallrunning
+        if ((wallLeft || wallRight) && verticalInput > 0 && AboveGround())
         {
-            CheckForWallRunStart();
+            if (!pm.wallrunning)
+                StartWallRun();
         }
+        // State 3 - None
         else
         {
-            if (!IsBesideWall() || IsFacingWall())
-            {
+            if (pm.wallrunning)
                 StopWallRun();
-                return;
-            }
-
-            if (Input.GetKeyDown(jumpKey))
-            {
-                JumpOffWall();
-                return;
-            }
-
-            ContinueWallRun();
         }
     }
 
-    void CheckForWallRunStart()
+    private void StartWallRun()
     {
-        if (pm.grounded) return;
-
-        RaycastHit hit;
-        Vector3 origin = transform.position + Vector3.up * 0.5f;
-
-        if (Physics.Raycast(origin, transform.right, out hit, wallCheckDistance, wallLayer) ||
-            Physics.Raycast(origin, -transform.right, out hit, wallCheckDistance, wallLayer))
-        {
-            StartWallRun(hit.normal);
-        }
+        pm.wallrunning = true;
     }
 
-    void StartWallRun(Vector3 wallNormal)
+    private void WallRunningMovement()
     {
-        isWallRunning = true;
-        currentWallNormal = wallNormal;
-        wallRunTimer = wallStickTime;
         rb.useGravity = false;
-    }
-
-    void ContinueWallRun()
-    {
-        wallRunTimer -= Time.deltaTime;
-
-        if (wallRunTimer <= 0f)
-        {
-            StopWallRun();
-            return;
-        }
-
-        // Run along the wall in forward direction (projected)
-        Vector3 wallForward = Vector3.Cross(currentWallNormal, Vector3.up).normalized;
-        Vector3 cameraForward = Camera.main.transform.forward;
-        cameraForward.y = 0;
-
-        if (Vector3.Dot(cameraForward, wallForward) < 0)
-            wallForward *= -1;
-
-        Vector3 runDir = wallForward;
-        rb.linearVelocity = runDir * wallRunSpeed + Vector3.down * wallRunGravity;
-    }
-
-    void StopWallRun()
-    {
-        isWallRunning = false;
-        rb.useGravity = true;
-
-        currentWallNormal = Vector3.zero;
-    }
-
-    void JumpOffWall()
-    {
-        StopWallRun();
-
-        // Cancel downward velocity for clean jump
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
 
-        // Add jump force away from wall
-        Vector3 jumpDir = Vector3.up + currentWallNormal; // upward + push off wall
-        rb.AddForce(jumpDir.normalized * jumpForce, ForceMode.Impulse);
+        Vector3 wallNormal = wallRight ? rightWallHit.normal : leftWallHit.normal;
+
+        Vector3 wallForward = Vector3.Cross(wallNormal, transform.up);
+
+        if ((orientation.forward - wallForward).magnitude > (orientation.forward - -wallForward).magnitude)
+            wallForward = -wallForward;
+
+        //forward force
+        rb.AddForce(wallForward * wallRunForce, ForceMode.Force);
+
+        // push to wall force
+        if (!(wallLeft && horizontalInput > 0) && !(wallRight && horizontalInput < 0))
+            rb.AddForce(-wallNormal * 100, ForceMode.Force);
     }
 
-    bool IsBesideWall()
+    private void StopWallRun()
     {
-        Vector3 origin = transform.position + Vector3.up * 0.5f;
-        return Physics.Raycast(origin, transform.right, wallCheckDistance, wallLayer) ||
-               Physics.Raycast(origin, -transform.right, wallCheckDistance, wallLayer);
-    }
-
-    bool IsFacingWall()
-    {
-        return Physics.Raycast(transform.position + Vector3.up * 0.5f, transform.forward, 0.6f, wallLayer);
+        pm.wallrunning = false;
     }
 }

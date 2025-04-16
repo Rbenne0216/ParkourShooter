@@ -404,43 +404,43 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 613531582985584440, guid: 30e8918efb5bbfb4d9766dc6bc08c76e, type: 3}
       propertyPath: m_Layer
-      value: 11
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 615848404084477114, guid: 30e8918efb5bbfb4d9766dc6bc08c76e, type: 3}
       propertyPath: m_Layer
-      value: 11
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 907871248856373335, guid: 30e8918efb5bbfb4d9766dc6bc08c76e, type: 3}
       propertyPath: m_Layer
-      value: 11
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1421124849548124191, guid: 30e8918efb5bbfb4d9766dc6bc08c76e, type: 3}
       propertyPath: m_Layer
-      value: 11
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3057312382514042944, guid: 30e8918efb5bbfb4d9766dc6bc08c76e, type: 3}
       propertyPath: m_Layer
-      value: 11
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 4410041727242817565, guid: 30e8918efb5bbfb4d9766dc6bc08c76e, type: 3}
       propertyPath: m_Layer
-      value: 11
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 4822164782342246431, guid: 30e8918efb5bbfb4d9766dc6bc08c76e, type: 3}
       propertyPath: m_Layer
-      value: 11
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 4841578685776281522, guid: 30e8918efb5bbfb4d9766dc6bc08c76e, type: 3}
       propertyPath: m_Layer
-      value: 11
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 5193153751026567098, guid: 30e8918efb5bbfb4d9766dc6bc08c76e, type: 3}
       propertyPath: m_Layer
-      value: 11
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 5461609771141055675, guid: 30e8918efb5bbfb4d9766dc6bc08c76e, type: 3}
       propertyPath: m_Layer
-      value: 11
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 5871182571838174023, guid: 30e8918efb5bbfb4d9766dc6bc08c76e, type: 3}
       propertyPath: m_LocalScale.x
@@ -500,35 +500,35 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6393478279979003870, guid: 30e8918efb5bbfb4d9766dc6bc08c76e, type: 3}
       propertyPath: m_Layer
-      value: 11
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 6973741517249938951, guid: 30e8918efb5bbfb4d9766dc6bc08c76e, type: 3}
       propertyPath: m_Layer
-      value: 11
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7805511226614598110, guid: 30e8918efb5bbfb4d9766dc6bc08c76e, type: 3}
       propertyPath: m_Layer
-      value: 11
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7832249519226916154, guid: 30e8918efb5bbfb4d9766dc6bc08c76e, type: 3}
       propertyPath: m_Layer
-      value: 11
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7924697731138959488, guid: 30e8918efb5bbfb4d9766dc6bc08c76e, type: 3}
       propertyPath: m_Layer
-      value: 11
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7987912425406588822, guid: 30e8918efb5bbfb4d9766dc6bc08c76e, type: 3}
       propertyPath: m_Layer
-      value: 11
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8033304826937070469, guid: 30e8918efb5bbfb4d9766dc6bc08c76e, type: 3}
       propertyPath: m_Layer
-      value: 11
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 9220559080093977889, guid: 30e8918efb5bbfb4d9766dc6bc08c76e, type: 3}
       propertyPath: m_Layer
-      value: 11
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -919,18 +919,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a14f0e9533a4d34db3509bd5796fc58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 10
-  groundDrag: 5
-  jumpForce: 8
+  walkSpeed: 7
+  sprintSpeed: 10
+  slideSpeed: 30
+  speedIncreaseMultiplier: 0
+  slopeIncreaseMultiplier: 1.5
+  groundDrag: 4
+  wallRunSpeed: 8.5
+  jumpForce: 12
   jumpCooldown: 0.25
   airMultiplier: 0.4
+  crouchSpeed: 0
+  crouchYScale: 0
   jumpKey: 32
+  sprintKey: 304
+  crouchKey: 306
   playerHeight: 2
   whatIsGround:
     serializedVersion: 2
     m_Bits: 1024
-  grounded: 0
+  maxSlopeAngle: 0
   orientation: {fileID: 987498064}
+  state: 0
+  sliding: 0
+  wallrunning: 1
 --- !u!114 &1533134408
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -943,15 +955,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 330795afa249fd84ab8c87d5dfea7e03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wallLayer:
+  whatIsWall:
     serializedVersion: 2
     m_Bits: 2048
-  wallCheckDistance: 1
-  wallRunGravity: 1
-  wallRunSpeed: 7
-  wallStickTime: 2
-  jumpForce: 10
-  jumpKey: 32
+  whatIsGround:
+    serializedVersion: 2
+    m_Bits: 1024
+  wallRunForce: 200
+  maxWallRunTime: 1.5
+  wallCheckDistance: 0.7
+  minJumpHeight: 2
+  orientation: {fileID: 987498064}
 --- !u!1 &1760632637
 GameObject:
   m_ObjectHideFlags: 0
