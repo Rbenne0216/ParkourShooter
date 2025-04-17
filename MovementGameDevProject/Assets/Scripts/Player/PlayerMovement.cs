@@ -11,6 +11,8 @@ public class PlayerMovement : MonoBehaviour
     public float sprintSpeed;
     public float groundDrag;
 
+    public float wallRunSpeed;
+
     [Header("Jumping")]
     public float jumpForce;
     public float jumpCooldown;
@@ -51,7 +53,9 @@ public class PlayerMovement : MonoBehaviour
         air
     }
 
-    //prevent player from falling over
+    public bool sliding;
+    public bool wallrunning;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -72,13 +76,10 @@ public class PlayerMovement : MonoBehaviour
         StateHandler();
 
         if (grounded)
-        {
             rb.linearDamping = groundDrag;
-        }
         else
-        {
             rb.linearDamping = 0;
-        }
+
     }
 
     private void FixedUpdate()
@@ -119,6 +120,14 @@ public class PlayerMovement : MonoBehaviour
 
     private void StateHandler()
     {
+    
+    // Mode - Wallrunning
+        if (wallrunning)
+        {
+            state = MovementState.wallrunning;
+            moveSpeed = wallRunSpeed;
+        }
+        
         //Mode - Sprinting
         if (grounded && Input.GetKey(sprintKey))
         {
@@ -154,7 +163,6 @@ public class PlayerMovement : MonoBehaviour
 
         if (grounded)
         rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
-
         else if (!grounded)
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
     }
