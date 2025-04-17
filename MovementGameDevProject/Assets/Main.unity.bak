@@ -472,7 +472,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5871182571838174023, guid: 30e8918efb5bbfb4d9766dc6bc08c76e, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 5871182571838174023, guid: 30e8918efb5bbfb4d9766dc6bc08c76e, type: 3}
       propertyPath: m_LocalRotation.y
@@ -480,7 +480,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5871182571838174023, guid: 30e8918efb5bbfb4d9766dc6bc08c76e, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 5871182571838174023, guid: 30e8918efb5bbfb4d9766dc6bc08c76e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1027,10 +1027,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a14f0e9533a4d34db3509bd5796fc58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 15
-  sprintSpeed: 35
-  groundDrag: 4
-  wallRunSpeed: 8.5
+<<<<<<< HEAD
+  walkSpeed: 20
+  sprintSpeed: 30
+  groundDrag: 5
   jumpForce: 12
   jumpCooldown: 0.25
   airMultiplier: 1
@@ -1039,10 +1039,28 @@ MonoBehaviour:
   jumpKey: 32
   sprintKey: 304
   slideKey: 99
+=======
+  walkSpeed: 7
+  sprintSpeed: 10
+  slideSpeed: 30
+  speedIncreaseMultiplier: 0
+  slopeIncreaseMultiplier: 1.5
+  groundDrag: 4
+  wallRunSpeed: 8.5
+  jumpForce: 12
+  jumpCooldown: 0.25
+  airMultiplier: 0.4
+  crouchSpeed: 0
+  crouchYScale: 0
+  jumpKey: 32
+  sprintKey: 304
+  crouchKey: 306
+>>>>>>> rob/wallride
   playerHeight: 2
   whatIsGround:
     serializedVersion: 2
     m_Bits: 1024
+  maxSlopeAngle: 0
   orientation: {fileID: 987498064}
   state: 0
   sliding: 0
@@ -1074,6 +1092,7 @@ MonoBehaviour:
   minJumpHeight: 2
   exitWallTime: 0.2
   orientation: {fileID: 987498064}
+  state: 0
 --- !u!1 &1760632637
 GameObject:
   m_ObjectHideFlags: 0
@@ -1224,8 +1243,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08dddece5d841314f99c09743cf41b07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sensX: 400
-  sensY: 400
+  sensX: 750
+  sensY: 750
   orientation: {fileID: 987498064}
 --- !u!1 &1955195899
 GameObject:

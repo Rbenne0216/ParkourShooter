@@ -50,6 +50,7 @@ public class PlayerMovement : MonoBehaviour
         walking,
         sprinting,
         sliding,
+        wallrunning,
         air
     }
 
