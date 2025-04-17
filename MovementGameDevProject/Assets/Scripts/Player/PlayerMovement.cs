@@ -102,14 +102,12 @@ public class PlayerMovement : MonoBehaviour
             Invoke(nameof(ResetJump), jumpCooldown);
         }
 
-        if (state == MovementState.sprinting)
+        
+        //when to slide
+        if (Input.GetKeyDown(slideKey))
         {
-            //when to slide
-            if (Input.GetKeyDown(slideKey))
-            {
-                transform.localScale = new Vector3(transform.localScale.x, slideYScale, transform.localScale.z);
-                rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
-            }
+            transform.localScale = new Vector3(transform.localScale.x, slideYScale, transform.localScale.z);
+            rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
         }
 
         //when to stop sliding
