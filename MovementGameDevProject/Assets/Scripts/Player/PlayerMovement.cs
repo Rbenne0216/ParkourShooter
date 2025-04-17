@@ -6,17 +6,28 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement")]
-    public float moveSpeed;
-
+    private float moveSpeed;
+    public float walkSpeed;
+    public float sprintSpeed;
     public float groundDrag;
 
+    public float wallRunSpeed;
+
+    [Header("Jumping")]
     public float jumpForce;
     public float jumpCooldown;
     public float airMultiplier;
     bool readyToJump;
 
+    [Header("Sliding")]
+    public float slideSpeed;
+    public float slideYScale;
+    private float startYScale;
+
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
+    public KeyCode sprintKey = KeyCode.LeftShift;
+    public KeyCode slideKey = KeyCode.C; 
 
     [Header("Ground Check")]
     public float playerHeight;
@@ -32,13 +43,28 @@ public class PlayerMovement : MonoBehaviour
 
     Rigidbody rb;
 
-    //prevent player from falling over
+    public MovementState state;
+
+    public enum MovementState
+    {
+        walking,
+        sprinting,
+        sliding,
+        wallrunning,
+        air
+    }
+
+    public bool sliding;
+    public bool wallrunning;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
 
         readyToJump = true;
+
+        startYScale = transform.localScale.y;
     }
 
     private void Update()
@@ -48,6 +74,7 @@ public class PlayerMovement : MonoBehaviour
 
         MyInput();
         SpeedControl();
+        StateHandler();
 
         if (grounded)
             rb.linearDamping = groundDrag;
@@ -58,6 +85,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        rb.AddForce(Physics.gravity * rb.mass);
         MovePlayer();
     }
 
@@ -75,6 +103,58 @@ public class PlayerMovement : MonoBehaviour
 
             Invoke(nameof(ResetJump), jumpCooldown);
         }
+
+        
+        //when to slide
+        if (Input.GetKeyDown(slideKey))
+        {
+            transform.localScale = new Vector3(transform.localScale.x, slideYScale, transform.localScale.z);
+            rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
+        }
+
+        //when to stop sliding
+        if (Input.GetKeyUp(slideKey))
+        {
+            transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
+        }
+    }
+
+    private void StateHandler()
+    {
+    
+    // Mode - Wallrunning
+        if (wallrunning)
+        {
+            state = MovementState.wallrunning;
+            moveSpeed = wallRunSpeed;
+        }
+        
+        //Mode - Sprinting
+        if (grounded && Input.GetKey(sprintKey))
+        {
+            state = MovementState.sprinting;
+            moveSpeed = sprintSpeed;
+
+            // Mode - Sliding
+            if (Input.GetKey(slideKey))
+            {
+                state = MovementState.sliding;
+                moveSpeed = slideSpeed;
+            }
+        }
+
+        //Mode - Walking
+        else if (grounded)
+        {
+            state = MovementState.walking;
+            moveSpeed = walkSpeed;
+        }
+
+        //Mode - Air
+        else
+        {
+            state = MovementState.air;
+        }
     }
 
     private void MovePlayer()
@@ -84,7 +164,6 @@ public class PlayerMovement : MonoBehaviour
 
         if (grounded)
         rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
-
         else if (!grounded)
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
     }
