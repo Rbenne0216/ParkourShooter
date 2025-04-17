@@ -805,7 +805,7 @@ MonoBehaviour:
   jumpCooldown: 0.25
   airMultiplier: 1
   slideSpeed: 30
-  slideYScale: 0.5
+  slideYScale: 0.3
   jumpKey: 32
   sprintKey: 304
   slideKey: 99

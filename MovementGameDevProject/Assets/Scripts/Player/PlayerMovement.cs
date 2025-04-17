@@ -25,7 +25,6 @@ public class PlayerMovement : MonoBehaviour
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
     public KeyCode sprintKey = KeyCode.LeftShift;
-    //public KeyCode crouchKey = KeyCode.C;
     public KeyCode slideKey = KeyCode.C; 
 
     [Header("Ground Check")]
@@ -103,26 +102,14 @@ public class PlayerMovement : MonoBehaviour
             Invoke(nameof(ResetJump), jumpCooldown);
         }
 
-        /*
-        //when to start crouching
-        if (Input.GetKeyDown(crouchKey))
+        if (state == MovementState.sprinting)
         {
-            transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
-            rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
-        }
-
-        //when to stop crouching
-        if (Input.GetKeyUp(crouchKey))
-        {
-            transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
-        }
-        */
-
-        //when to slide
-        if (Input.GetKeyDown(slideKey))
-        {
-            transform.localScale = new Vector3(transform.localScale.x, slideYScale, transform.localScale.z);
-            rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
+            //when to slide
+            if (Input.GetKeyDown(slideKey))
+            {
+                transform.localScale = new Vector3(transform.localScale.x, slideYScale, transform.localScale.z);
+                rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
+            }
         }
 
         //when to stop sliding
@@ -154,15 +141,6 @@ public class PlayerMovement : MonoBehaviour
             state = MovementState.walking;
             moveSpeed = walkSpeed;
         }
-
-        /*
-        //Mode - Crouching
-        if (Input.GetKey(crouchKey))
-        {
-            state = MovementState.crouching;
-            moveSpeed = crouchSpeed;
-        }
-        */
 
         //Mode - Air
         else
