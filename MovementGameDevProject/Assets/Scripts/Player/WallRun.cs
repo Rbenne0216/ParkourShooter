@@ -31,8 +31,13 @@ public class Wallrun : MonoBehaviour
     public float exitWallTime;
     private float exitWallTimer;
 
+    [Header("Gravity")]
+    public bool useGravity;
+    public float gravityCounterForce;
+
     [Header("References")]
     public Transform orientation;
+    public MouseLook cam;
     private PlayerMovement pm;
     private Rigidbody rb;
 
@@ -77,6 +82,16 @@ public class Wallrun : MonoBehaviour
             if (!pm.wallrunning)
                 StartWallRun();
 
+            // wallrun timer
+            if (wallRunTimer > 0)
+                wallRunTimer -= Time.deltaTime;
+
+            if (wallRunTimer <= 0 && pm.wallrunning)
+            {
+                exitingWall = true;
+                exitWallTimer = exitWallTime;
+            }
+
             // wall jump
             if (Input.GetKeyDown(jumpKey)) 
                 WallJump();
@@ -104,12 +119,22 @@ public class Wallrun : MonoBehaviour
     private void StartWallRun()
     {
         pm.wallrunning = true;
+
+        wallRunTimer = maxWallRunTime;
+
+        rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+
+        // apply camera effects
+        cam.DoFov(90f);
+        if (wallLeft)
+            cam.DoTilt(-5f);
+        if (wallRight)
+            cam.DoTilt(5f);
     }
 
     private void WallRunningMovement()
     {
-        rb.useGravity = false;
-        rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+        rb.useGravity = useGravity;
 
         Vector3 wallNormal = wallRight ? rightWallHit.normal : leftWallHit.normal;
 
@@ -124,11 +149,19 @@ public class Wallrun : MonoBehaviour
         // push to wall force
         if (!(wallLeft && horizontalInput > 0) && !(wallRight && horizontalInput < 0))
             rb.AddForce(-wallNormal * 100, ForceMode.Force);
+
+        // weaken gravity
+        if (useGravity)
+            rb.AddForce(transform.up * gravityCounterForce, ForceMode.Force);
     }
 
     private void StopWallRun()
     {
         pm.wallrunning = false;
+
+        // reset camera effects
+        cam.DoFov(80f);
+        cam.DoTilt(0f);
     }
 
     private void WallJump()
